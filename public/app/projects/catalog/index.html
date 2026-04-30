@@ -86,16 +86,14 @@
     })
       .then((res) => {
         res.json().then((data) => {
-          let content = '';
           for (let i = 1; i <= data.length; i++) {
             addCard(
               data[i - 1].id,
               data[i - 1].picture ? data[i - 1].picture : 'no-image.jpg',
               data[i - 1].title
             );
-
-            renderCards(cards);
           }
+          renderCards(cards);
         });
       })
       .catch((err) => {
