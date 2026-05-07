@@ -44,7 +44,7 @@ function listAll() {
 
 function getById(id) {
   const query = `
-        SELECT * FROM Projects WHERE Projects.id = '${id}';
+        SELECT p.fkUser, p.title AS projectTitle, p.githubUrl, p.picture, p.description, r.title AS reviewTitle, r.text AS reviewText, r.rating AS reviewRating FROM Projects AS p LEFT JOIN Reviews AS r ON r.projectId = p.id WHERE r.projectId = '${id}';
     `;
 
   console.log('Running the following query: ' + query);

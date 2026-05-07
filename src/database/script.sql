@@ -26,6 +26,7 @@ CREATE TABLE Reviews (
     rating INT NOT NULL,
     CHECK (rating >= 0 AND rating <= 5),
     projectId INT NOT NULL,
-    FOREIGN KEY (projectId) REFERENCES Projects(id),
+    CONSTRAINT fk_reviews_project FOREIGN KEY(projectId) 
+        REFERENCES Projects(id),
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-)
+);

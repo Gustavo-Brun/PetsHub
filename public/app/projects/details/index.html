@@ -23,7 +23,23 @@
 
   <body onload="(validateSession(), getProject())">
     <div class="main_container">
-      <div id="card_container"></div>
+      <section>
+        <div
+          id="details_container"
+          class="card_container"
+        ></div>
+        <div
+          id="addReview_container"
+          class="card_container"
+        ></div>
+      </section>
+
+      <section>
+        <div
+          id="listReview_container"
+          class="card_container"
+        ></div>
+      </section>
     </div>
 
     <footer>
@@ -53,9 +69,13 @@
 </html>
 
 <script>
-  function getProject() {
-    const projectId = sessionStorage.projectId;
+  const projectId = sessionStorage.projectId;
 
+  if (!projectId) {
+    window.location = '/app/projects/catalog';
+  }
+
+  function getProject() {
     if (!projectId) {
       return (window.location = '/app/projects/catalog');
     }
@@ -76,12 +96,17 @@
 
         res.json().then((data) => {
           const fkUser = data[0].fkUser;
-          const title = data[0].title;
+          const projectTitle = data[0].projectTitle;
           const picture = data[0].picture ? data[0].picture : 'no-image.jpg';
           const description = data[0].description ? data[0].description : 'Sem descrição.';
           const github = data[0].githubUrl;
 
-          renderDetails(fkUser, title, picture, description, github);
+          const reviewTitle = data[0].reviewTitle;
+          const reviewText = data[0].reviewText;
+          const reviewRating = data[0].reviewRating;
+
+          renderDetails(fkUser, projectTitle, picture, description, github);
+          renderReviews(fkUser, data);
         });
       })
       .catch((err) => {
@@ -92,7 +117,7 @@
 
   function renderDetails(fkUser, title, picture, description, github) {
     if (fkUser == sessionStorage.userId) {
-      card_container.innerHTML = `
+      details_container.innerHTML = `
         <div class="picture_container">
           <img src="/pictures/${picture}" />
           <button
@@ -158,9 +183,7 @@
       let updatedDescription = input_description.value;
       let updatedGithub = input_github;
     } else {
-      console.log(picture);
-
-      card_container.innerHTML = `
+      details_container.innerHTML = `
         <img src="/pictures/${picture}" />
         <h1>${title}</h1>
         <p>${description}</p>
@@ -179,7 +202,6 @@
 
   function updateDetail(column) {
     const userId = sessionStorage.userId;
-    const projectId = sessionStorage.projectId;
 
     let value;
 
@@ -216,6 +238,92 @@
         }
 
         window.location = '/app/projects/catalog';
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Ops, algo deu errado. Tente novamente mais tarde!');
+      });
+  }
+
+  function renderReviews(fkUser, data) {
+    if (fkUser != sessionStorage.userId) {
+      addReview_container.innerHTML = `
+        <h2>Adicionar Review</h2>
+        <span>Feedbacks anônimos</span>
+        <select
+          name="rating"
+          id="select_rating"
+        >
+          <option
+            value="0"
+            selected
+            disabled
+          >
+            Selecione uma opção
+          </option>
+          <option value="1">Muito a melhorar</option>
+          <option value="2">Não gostei</option>
+          <option value="3">Mais ou menos</option>
+          <option value="4">Gostei</option>
+          <option value="5">Excelente</option>
+        </select>
+        <span>Descrição</span>
+        <textarea
+          id="text_textarea"
+          placeholder="Lorem ipsum dolor sit amet consectetur adipiscing elit."
+          rows="6"
+        ></textarea>
+        <button onclick="createReview()">Adicionar Review</button
+      `;
+    } else {
+      addReview_container.style.display = 'none';
+    }
+
+    let content = '';
+
+    for (let i = 0; i < data.length; i++) {
+      content += `
+          <li>
+            <span>${data[i].reviewRating}</span>
+            <span>${data[i].reviewTitle}</span>
+            <span>${data[i].reviewText}</span>
+          </li>
+          <br />
+        `;
+    }
+
+    listReview_container.innerHTML = content;
+  }
+
+  function createReview() {
+    let title = '';
+    let text = text_textarea.value;
+    let rating = select_rating.value;
+
+    fetch(`/reviews/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        projectId,
+        title,
+        text,
+        rating
+      })
+    })
+      .then((res) => {
+        if (!res.ok) {
+          if (res.status == 400) {
+            alert(`Algo deu errado ao processar os dados enviados.`);
+          } else {
+            alert('Opss, algo deu errado. Tente novamente mais tarde!');
+          }
+
+          return;
+        }
+
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);

@@ -15,7 +15,7 @@ function create(req, res) {
     reviewsModel
       .create(projectId, title, text, rating)
       .then(function (data) {
-        res.status(201);
+        res.status(201).send();
       })
       .catch(function (err) {
         console.log(err);
