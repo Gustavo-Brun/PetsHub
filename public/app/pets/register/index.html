@@ -7,7 +7,7 @@
       content="IE=edge"
     />
     <meta content="width=device-width, initial-scale=1.0" />
-    <title>Project Register</title>
+    <title>Pet Register</title>
 
     <script src="/js/middleware.js"></script>
 
@@ -24,32 +24,26 @@
   <body onload="validateSession()">
     <div class="form_container">
       <div class="input_container">
-        <h1>Cadastre seu Projeto!</h1>
-        <label for="github">Link do GitHub</label>
+        <h1>Cadastre seu Pet!</h1>
+      </div>
+      <div class="input_container">
+        <label for="name_input">Nome</label>
         <input
-          id="github_input"
+          id="name_input"
           type="text"
-          placeholder="https://github.com/Gustavo-Brun/ProjectsHub"
+          placeholder="Scooby"
         />
       </div>
       <div class="input_container">
-        <label for="title">Título</label>
-        <input
-          id="title_input"
-          type="text"
-          placeholder="ProjectsHub"
-        />
-      </div>
-      <div class="input_container">
-        <label for="description">Descrição</label>
+        <label for="description_textarea">Descrição</label>
         <span>opcional</span>
         <textarea
           id="description_textarea"
-          placeholder="Lorem ipsum dolor sit amet consectetur adipiscing elit."
+          placeholder="Yorkshire cheio de energia, gosta de passear e interagir com outros cachorros."
         ></textarea>
       </div>
       <div class="input_container">
-        <label for="picture">Imagem/Thumbnail</label>
+        <label for="picture_input">Imagem/Foto</label>
         <span>opcional</span>
         <input
           id="picture_input"
@@ -57,45 +51,39 @@
         />
       </div>
 
-      <button onclick="send()">Cadastrar Projeto</button>
+      <button onclick="send()">Cadastrar Pet</button>
     </div>
   </body>
 </html>
 
 <script>
   function send() {
-    const title = title_input.value;
-    const githubUrl = github_input.value;
+    const name = name_input.value;
     const picture = picture_input.files[0];
     const description = description_textarea.value;
     const userId = sessionStorage.userId;
 
     if (!userId) {
       return (window.location = '/auth/signup');
-    } else if (!githubUrl.includes('github.com/')) {
-      return alert('Insira um link de repositório válido!');
-    } else if (title.length < 3) {
-      return alert('O Título deve conter ao menos 3 caracteres.');
+    } else if (name.length < 2) {
+      return alert('O nome deve conter ao menos 2 caracteres.');
     }
 
-    fetch('/projects/create', {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('picture', picture);
+    formData.append('description', description);
+    formData.append('userId', userId);
+
+    fetch('/pets/create', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        title,
-        githubUrl,
-        picture,
-        description,
-        userId
-      })
+      body: formData
     })
       .then((res) => {
         if (res.ok) {
-          window.location = '/app/projects/catalog';
+          window.location = '/app/pets/list';
         } else if (res.status == 409) {
-          alert(`Um projeto com o Link '${githubUrl}' e/ou o Título '${title}' já foi cadastrado.`);
+          alert(`Você já cadastrou o pet '${githubUrl}'.`);
         } else {
           alert('Opss, algo deu errado. Tente novamente mais tarde!');
         }

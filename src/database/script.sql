@@ -1,6 +1,6 @@
-CREATE DATABASE ProjectsHub;
+CREATE DATABASE PetsHub;
 
-USE ProjectsHub;
+USE PetsHub;
 
 CREATE TABLE Users (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -8,25 +8,30 @@ CREATE TABLE Users (
     password VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE Projects (
+CREATE TABLE Pets (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(20) UNIQUE NOT NULL,
-    githubUrl VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(20) NOT NULL,
     picture VARCHAR(255) UNIQUE,
     description VARCHAR(45),
-    fkUser INT UNIQUE NOT NULL,
-    CONSTRAINT fk_projects_user FOREIGN KEY(fkUser)
+    userId INT NOT NULL,
+
+    CONSTRAINT un_userId_name UNIQUE(userId, name),
+    CONSTRAINT fk_pet_user FOREIGN KEY(userId)
         REFERENCES Users(id)
 );
 
 CREATE TABLE Reviews (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    userId INT NOT NULL,
+    petId INT NOT NULL,
     title VARCHAR(20) NOT NULL,
     text VARCHAR(255) NOT NULL,
     rating INT NOT NULL,
-    CHECK (rating >= 0 AND rating <= 5),
-    projectId INT NOT NULL,
-    CONSTRAINT fk_reviews_project FOREIGN KEY(projectId) 
-        REFERENCES Projects(id),
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    CHECK (rating >= 0 AND rating <= 3),
+    CONSTRAINT pk_reviews PRIMARY KEY(userId, petId),
+    CONSTRAINT fk_review_user FOREIGN KEY(userId) 
+        REFERENCES Users(id),
+    CONSTRAINT fk_review_pet FOREIGN KEY(petId) 
+        REFERENCES Pets(id)
 );

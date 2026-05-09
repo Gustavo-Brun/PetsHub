@@ -66,7 +66,7 @@
         if (res.ok) {
           res.json().then((data) => {
             sessionStorage.userId = data.userId;
-            window.location = '/app/projects/catalog';
+            window.location = '/app/pets/list';
           });
         } else if (res.status == 409) {
           alert(`O nome de usuário '${username}' já foi cadastrado.`);

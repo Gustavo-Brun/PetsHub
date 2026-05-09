@@ -10,7 +10,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>Projects List</title>
+    <title>Pets List</title>
 
     <script src="/js/middleware.js"></script>
 
@@ -24,8 +24,8 @@
     />
   </head>
 
-  <body onload="(validateSession(), getProjects())">
-    <h1>Projetos disponíveis</h1>
+  <body onload="(validateSession(), getPets())">
+    <h1>Pets disponíveis</h1>
 
     <div class="main_container">
       <div class="input_container">
@@ -33,10 +33,10 @@
           oninput="filter()"
           id="search_input"
           type="text"
-          placeholder="Busque pelo título"
+          placeholder="Busque pelo nome do pet"
         />
 
-        <button onclick="window.location = '/app/projects/register'">+</button>
+        <button onclick="window.location = '/app/pets/register'">+</button>
       </div>
 
       <ul id="cards_container"></ul>
@@ -80,8 +80,8 @@
 <script>
   const cards = [];
 
-  function getProjects() {
-    fetch('/projects/list', {
+  function getPets() {
+    fetch('/pets/listAll', {
       method: 'GET'
     })
       .then((res) => {
@@ -90,7 +90,7 @@
             addCard(
               data[i - 1].id,
               data[i - 1].picture ? data[i - 1].picture : 'no-image.jpg',
-              data[i - 1].title
+              data[i - 1].name
             );
           }
           renderCards(cards);
@@ -103,16 +103,16 @@
   }
 
   function redirect(id) {
-    sessionStorage.projectId = id;
+    sessionStorage.petId = id;
 
-    window.location = '/app/projects/details';
+    window.location = '/app/pets/details';
   }
 
-  function addCard(id, picture, title) {
+  function addCard(id, picture, name) {
     cards.push({
       id,
       picture,
-      title
+      name
     });
   }
 
@@ -124,7 +124,7 @@
         content += `
           <li onclick="redirect(${data[i - 1].id})">
             <img src="/pictures/${data[i - 1].picture ? data[i - 1].picture : 'no-image.jpg'}">
-            <span>${data[i - 1].title}</span>
+            <span>${data[i - 1].name}</span>
           </li>
         `;
       }
@@ -148,7 +148,7 @@
 
     let filteredCards = [];
 
-    filteredCards = cards.filter((item) => item.title.includes(text));
+    filteredCards = cards.filter((item) => item.name.includes(text));
 
     return renderCards(filteredCards);
   }

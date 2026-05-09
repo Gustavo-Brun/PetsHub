@@ -1,19 +1,18 @@
 const database = require('../database/config');
 
-function getExistingProject(title, githubUrl) {
+function getExistingPet(userId, name) {
   const query = `
-        SELECT id FROM Projects WHERE title = '${title}' OR githubUrl = '${githubUrl}';
+        SELECT id FROM Pets WHERE userId = '${userId}' AND name = '${name}'
     `;
 
   console.log('Running the following query: ' + query);
   return database.executar(query);
 }
 
-function create(title, githubUrl, picture, description, userId) {
-  let query = 'INSERT INTO Projects (title, githubUrl, picture, description,  fkUser) VALUES';
+function create(name, picture, description, userId) {
+  let query = 'INSERT INTO Pets (name, picture, description, userId) VALUES';
 
-  query += ` ("${title}", `;
-  query += `"${githubUrl}", `;
+  query += ` ("${name}", `;
 
   if (picture) {
     query += `"${picture}", `;
@@ -35,7 +34,7 @@ function create(title, githubUrl, picture, description, userId) {
 
 function listAll() {
   const query = `
-        SELECT id, title, picture FROM Projects;
+        SELECT id, name, picture FROM Pets;
     `;
 
   console.log('Running the following query: ' + query);
@@ -44,7 +43,17 @@ function listAll() {
 
 function getById(id) {
   const query = `
-        SELECT p.fkUser, p.title AS projectTitle, p.githubUrl, p.picture, p.description, r.title AS reviewTitle, r.text AS reviewText, r.rating AS reviewRating FROM Projects AS p LEFT JOIN Reviews AS r ON r.projectId = p.id WHERE r.projectId = '${id}';
+        SELECT 
+          tutor.id AS tutorId,
+          tutor.username AS tutorName,
+          pet.id, 
+          pet.name, 
+          pet.picture, 
+          pet.description
+            FROM Pets AS pet
+              JOIN Users AS tutor
+              ON pet.userId = tutor.id
+                WHERE pet.id = ${id}
     `;
 
   console.log('Running the following query: ' + query);
@@ -53,7 +62,7 @@ function getById(id) {
 
 function update(id, column, value) {
   const query = `
-    UPDATE Projects SET ${column} = "${value}" WHERE id = ${id}
+    UPDATE Pets SET ${column} = "${value}" WHERE id = ${id}
   `;
 
   console.log('Running the following query: ' + query);
@@ -62,7 +71,7 @@ function update(id, column, value) {
 
 module.exports = {
   create,
-  getExistingProject,
+  getExistingPet,
   listAll,
   getById,
   update

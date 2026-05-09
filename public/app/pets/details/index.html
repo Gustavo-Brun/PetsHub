@@ -7,7 +7,7 @@
       content="IE=edge"
     />
     <meta content="width=device-width, initial-scale=1.0" />
-    <title>Project Details</title>
+    <title>Pet Details</title>
 
     <script src="/js/middleware.js"></script>
 
@@ -21,7 +21,7 @@
     />
   </head>
 
-  <body onload="(validateSession(), getProject())">
+  <body onload="(validateSession(), getPet())">
     <div class="main_container">
       <section>
         <div
@@ -56,7 +56,7 @@
 
         <a
           class="action_link"
-          href="/app/projects/catalog"
+          href="/app/pets/list"
         >
           <img
             src="/assets/imgs/return.png"
@@ -69,24 +69,27 @@
 </html>
 
 <script>
-  const projectId = sessionStorage.projectId;
+  const userId = sessionStorage.userId;
+  const petId = sessionStorage.petId;
 
-  if (!projectId) {
-    window.location = '/app/projects/catalog';
+  if (!userId || !petId) {
+    window.location = '/app/pets/list';
   }
 
-  function getProject() {
-    if (!projectId) {
-      return (window.location = '/app/projects/catalog');
+  let selectedPet;
+
+  function getPet() {
+    if (!petId) {
+      return (window.location = '/app/pets/list');
     }
 
-    fetch(`/projects/${projectId}`, {
+    fetch(`/pets/${petId}`, {
       method: 'GET'
     })
       .then((res) => {
         if (!res.ok) {
           if (res.status == 400) {
-            alert(`Algo deu errado ao selecionar o projeto.`);
+            alert(`Algo deu errado ao encontrar o pet.`);
           } else {
             alert('Opss, algo deu errado. Tente novamente mais tarde!');
           }
@@ -95,18 +98,18 @@
         }
 
         res.json().then((data) => {
-          const fkUser = data[0].fkUser;
-          const projectTitle = data[0].projectTitle;
-          const picture = data[0].picture ? data[0].picture : 'no-image.jpg';
-          const description = data[0].description ? data[0].description : 'Sem descrição.';
-          const github = data[0].githubUrl;
+          selectedPet = data;
 
-          const reviewTitle = data[0].reviewTitle;
-          const reviewText = data[0].reviewText;
-          const reviewRating = data[0].reviewRating;
+          if (!selectedPet.pet.picture) {
+            selectedPet.pet.picture = 'no-image.jpg';
+          }
 
-          renderDetails(fkUser, projectTitle, picture, description, github);
-          renderReviews(fkUser, data);
+          if (!selectedPet.pet.description) {
+            selectedPet.pet.description = 'Sem descrição.';
+          }
+
+          renderDetails();
+          renderReviews();
         });
       })
       .catch((err) => {
@@ -115,11 +118,11 @@
       });
   }
 
-  function renderDetails(fkUser, title, picture, description, github) {
-    if (fkUser == sessionStorage.userId) {
+  function renderDetails() {
+    if (userId == selectedPet.tutor.id) {
       details_container.innerHTML = `
         <div class="picture_container">
-          <img src="/pictures/${picture}" />
+          <img src="/pictures/${selectedPet.pet.picture}" />
           <button
               onclick="updateDetail('picture')"
               class="edit_button"
@@ -132,9 +135,9 @@
           <input type="text" id="input_picture" placeholder="Nova URL">
         </div>
         <div>
-          <input type="text" id="input_title" value="${title}">
+          <input type="text" id="input_name" value="${selectedPet.pet.name}">
           <button
-            onclick="updateDetail('title')"
+            onclick="updateDetail('name')"
             class="edit_button"
           >
             <img
@@ -144,7 +147,7 @@
           </button>
         </div>
         <div>
-          <input type="text" id="input_description" value="${description}">
+          <input type="text" id="input_description" value="${selectedPet.pet.description}">
            <button
               onclick="updateDetail('description')"
               class="edit_button"
@@ -155,67 +158,32 @@
             />
           </button>
         </div>
-        <div class="github_container">
-          <a
-            class="action_link"
-            href="${github}"
-          >
-            <img
-              src="/assets/imgs/github.png"
-              alt="Github button"
-            />
-          </a>
-          <input type="text" id="input_github" value="${github}">
-          <button
-            onclick="updateDetail('github')"
-            class="edit_button"
-          >
-            <img
-              src="/assets/imgs/edit.png"
-              alt="Edit button"
-            />
-          </button>
-        </div>
       `;
 
-      let updatedTitle = input_title.value;
+      let updatedName = input_name.value;
       let updatedPicture = input_picture.value;
       let updatedDescription = input_description.value;
-      let updatedGithub = input_github;
     } else {
       details_container.innerHTML = `
-        <img src="/pictures/${picture}" />
-        <h1>${title}</h1>
-        <p>${description}</p>
-        <a
-          class="action_link"
-          href="${github}"
-        >
-          <img
-            src="/assets/imgs/github.png"
-            alt="Github button"
-          />
-        </a>
+        <img src="/pictures/${selectedPet.pet.picture}" />
+        <h1>${selectedPet.pet.name}</h1>
+        <p>${selectedPet.pet.description}</p>
       `;
     }
   }
 
   function updateDetail(column) {
-    const userId = sessionStorage.userId;
-
     let value;
 
     if (column == 'picture') {
       value = input_picture.value;
-    } else if (column == 'title') {
-      value = input_title.value;
+    } else if (column == 'name') {
+      value = input_name.value;
     } else if (column == 'description') {
       value = input_description.value;
-    } else if (column == 'github') {
-      value = input_github.value;
     }
 
-    fetch(`/projects/${projectId}`, {
+    fetch(`/pets/${petId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -229,7 +197,7 @@
       .then((res) => {
         if (!res.ok) {
           if (res.status == 400) {
-            alert(`Algo deu errado ao atualizar o projeto.`);
+            alert(`Algo deu errado ao atualizar o pet.`);
           } else {
             alert('Opss, algo deu errado. Tente novamente mais tarde!');
           }
@@ -237,7 +205,7 @@
           return;
         }
 
-        window.location = '/app/projects/catalog';
+        window.location = '/app/petls/list';
       })
       .catch((err) => {
         console.log(err);
@@ -245,11 +213,12 @@
       });
   }
 
-  function renderReviews(fkUser, data) {
-    if (fkUser != sessionStorage.userId) {
+  function renderReviews() {
+    if (userId != selectedPet.tutor.id) {
       addReview_container.innerHTML = `
         <h2>Adicionar Review</h2>
-        <span>Feedbacks anônimos</span>
+        <span>Título</span>
+        <input type="text" id="input_title">
         <select
           name="rating"
           id="select_rating"
@@ -261,11 +230,9 @@
           >
             Selecione uma opção
           </option>
-          <option value="1">Muito a melhorar</option>
-          <option value="2">Não gostei</option>
-          <option value="3">Mais ou menos</option>
-          <option value="4">Gostei</option>
-          <option value="5">Excelente</option>
+          <option value="1">Não gostei</option>
+          <option value="2">Mais ou menos</option>
+          <option value="3">Gostei</option>
         </select>
         <span>Descrição</span>
         <textarea
@@ -281,12 +248,17 @@
 
     let content = '';
 
-    for (let i = 0; i < data.length; i++) {
+    if (selectedPet.reviews.length <= 0) {
+      content = '<li>Este pet está sem reviews :(. Seja o primeiro!</li>';
+    }
+
+    for (let i = 0; i < selectedPet.reviews.length; i++) {
       content += `
           <li>
-            <span>${data[i].reviewRating}</span>
-            <span>${data[i].reviewTitle}</span>
-            <span>${data[i].reviewText}</span>
+            <span>${selectedPet.reviews[i].reviewUser}</span>
+            <span>${selectedPet.reviews[i].reviewRating}</span>
+            <span>${selectedPet.reviews[i].reviewTitle}</span>
+            <span>${selectedPet.reviews[i].reviewText}</span>
           </li>
           <br />
         `;
@@ -296,7 +268,7 @@
   }
 
   function createReview() {
-    let title = '';
+    let title = input_title.value;
     let text = text_textarea.value;
     let rating = select_rating.value;
 
@@ -306,7 +278,8 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        projectId,
+        userId,
+        petId,
         title,
         text,
         rating
@@ -316,6 +289,8 @@
         if (!res.ok) {
           if (res.status == 400) {
             alert(`Algo deu errado ao processar os dados enviados.`);
+          } else if (res.status == 409) {
+            alert(`Você já deu uma review para este pet.`);
           } else {
             alert('Opss, algo deu errado. Tente novamente mais tarde!');
           }

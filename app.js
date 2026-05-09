@@ -23,7 +23,7 @@ var aquariosRouter = require("./src/routes/aquarios");
 var empresasRouter = require("./src/routes/empresas");
 
 const usersRouter = require('./src/routes/users')
-const projectsRouter = require('./src/routes/projects')
+const petsRoutes = require('./src/routes/pets')
 const reviewsRouter = require('./src/routes/reviews')
 
 app.use(express.json());
@@ -34,7 +34,7 @@ app.use(cors());
 
 app.use("/", indexRouter);
 app.use('/users', usersRouter);
-app.use('/projects', projectsRouter);
+app.use('/pets', petsRoutes);
 app.use('/reviews', reviewsRouter);
 
 

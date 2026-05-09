@@ -79,18 +79,8 @@
   width: 40px;
 }
 
-#details_container .github_container {
-  width: 100%;
-  position: relative;
-}
-
 #addReview_container {
   height: fit-content;
-}
-
-.github_container .action_link {
-  position: absolute;
-  right: 0;
 }
 
 footer .actions_container .action_link {
