@@ -138,9 +138,36 @@ function update(req, res) {
     });
 }
 
+function getQtts(req, res) {
+  petsModel
+    .countAll()
+    .then(function (petsCount) {
+      reviewsModel
+        .countAll()
+        .then(function (reviewsCount) {
+          const payload = {
+            pets: petsCount[0].totalPets,
+            reviews: reviewsCount[0].totalReviews
+          };
+          res.status(200).send(payload);
+        })
+        .catch(function (err) {
+          console.log(err);
+          console.log('\n Unexpected error to get pet reviews! Error: ', err.sqlMessage);
+          res.status(500).json(err.sqlMessage);
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      console.log('\n Unexpected error to get pets count! Error: ', err.sqlMessage);
+      res.status(500).json(err.sqlMessage);
+    });
+}
+
 module.exports = {
   create,
   listAll,
   getById,
-  update
+  update,
+  getQtts
 };

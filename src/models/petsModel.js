@@ -69,10 +69,20 @@ function update(id, column, value) {
   return database.executar(query);
 }
 
+function countAll() {
+  const query = `
+    SELECT COUNT(id) AS totalPets FROM Pets;
+  `;
+
+  console.log('Running the following query: ' + query);
+  return database.executar(query);
+}
+
 module.exports = {
   create,
   getExistingPet,
   listAll,
   getById,
-  update
+  update,
+  countAll
 };

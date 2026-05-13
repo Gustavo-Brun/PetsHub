@@ -12,12 +12,16 @@ router.get('/listAll', function (req, res) {
   petsController.listAll(req, res);
 });
 
-router.get('/:petId', function (req, res) {
+router.get('/data/:petId', function (req, res) {
   petsController.getById(req, res);
 });
 
 router.patch('/:id', function (req, res) {
   petsController.update(req, res);
+});
+
+router.get('/count', function (req, res) {
+  petsController.getQtts(req, res);
 });
 
 module.exports = router;

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="X-UA-Compatible"
+      content="IE=edge"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>PetsHub | Página Inicial</title>
+
+    <link
+      rel="stylesheet"
+      href="./index.css"
+    />
+  </head>
+
+  <body onload="getQtt()">
+    <nav>
+      <h1>PetsHub</h1>
+      <ul>
+        <li><a href="/">Início</a></li>
+        <li><a href="/about">Sobre nós</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/auth/signin">Entrar</a></li>
+      </ul>
+    </nav>
+
+    <header>
+      <h1>Compartilhe a fofura dos seus pets</h1>
+      <button onclick="window.location = '/auth/signup'">Cadastre-se</button>
+    </header>
+
+    <section>
+      <h2>Junte-se à maior comunidade de animais de estimação da SPTECH!</h2>
+      <div><span id="petsQtt"></span> Pets Cadastrados</div>
+      <div><span id="reviewsQtt"></span> Reviews Realizadas</div>
+    </section>
+
+    <section>
+      <h3>
+        Nossa comunidade é feita para amantes de animais, compartilhando momentos especiais e
+        vínculos únicos!
+      </h3>
+      <button onclick="window.location = '/auth/signup'">Cadastre-se</button>
+    </section>
+
+    <footer>
+      <span>
+        Made with 💙 by
+        <a
+          href="https://github.com/Gustavo-Brun/"
+          aria-label="Author's GitHub Link"
+        >
+          Gustavo Brun - 1ADSB
+        </a>
+      </span>
+    </footer>
+  </body>
+</html>
+
+<script>
+  function getQtt() {
+    fetch('/pets/count', {
+      method: 'GET'
+    })
+      .then((res) => {
+        res.json().then((json) => {
+          petsQtt.innerHTML = json.pets;
+          reviewsQtt.innerHTML = json.reviews;
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+</script>

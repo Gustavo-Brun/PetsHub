@@ -29,8 +29,18 @@ function getByPet(petId) {
         FROM Reviews AS r    
           JOIN Users AS u
           ON r.userId = u.id
-            WHERE r.petId = ${petId}
+            WHERE r.petId = ${petId};
   `;
+
+  console.log('Running the following query: ' + query);
+  return database.executar(query);
+}
+
+function countAll() {
+  const query = `
+    SELECT COUNT(petId) AS totalReviews FROM Reviews;
+  `;
+
   console.log('Running the following query: ' + query);
   return database.executar(query);
 }
@@ -38,5 +48,6 @@ function getByPet(petId) {
 module.exports = {
   getExistingReview,
   create,
-  getByPet
+  getByPet,
+  countAll
 };
