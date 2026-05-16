@@ -40,6 +40,67 @@ function create(req, res) {
   }
 }
 
+function listAll(req, res) {
+  reviewsModel
+    .listAll()
+    .then(function (data) {
+      res.status(200).json(data);
+    })
+    .catch(function (err) {
+      console.log(err);
+      console.log('\n Unexpected error to list pets! Error: ', err.sqlMessage);
+      res.status(500).json(err.sqlMessage);
+    });
+}
+
+function getKpis(req, res) {
+  reviewsModel
+    .countMost()
+    .then(function (mostData) {
+      if (mostData.length < 1) {
+        return res.status(404).send('Data not found.');
+      }
+
+      reviewsModel
+        .countLess()
+        .then(function (lessData) {
+          if (lessData.length < 1) {
+            return res.status(404).send('Data not found.');
+          }
+
+          const most = mostData[0];
+          const less = lessData[0];
+
+          const payload = {
+            most: {
+              petId: most.id,
+              petName: most.name,
+              totalReviews: most.totalReviews
+            },
+            less: {
+              petId: less.id,
+              petName: less.name,
+              totalReviews: less.totalReviews
+            }
+          };
+
+          res.status(200).send(payload);
+        })
+        .catch(function (err) {
+          console.log(err);
+          console.log('\n Unexpected error to get pet reviews! Error: ', err.sqlMessage);
+          res.status(500).json(err.sqlMessage);
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      console.log('\n Unexpected error to get pet details! Error: ', err.sqlMessage);
+      res.status(500).json(err.sqlMessage);
+    });
+}
+
 module.exports = {
-  create
+  create,
+  listAll,
+  getKpis
 };

@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: Calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(gray, white);
+  padding-top: 100px;
+}
+
+nav {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom: 2px solid gray;
+  border-radius: 24px;
+  box-shadow: 0px 5px gray;
+  position: fixed;
+  top: 0;
+  height: 84px;
+  backdrop-filter: blur(4px);
+}
+
+ul {
+  display: flex;
+  gap: 20px;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+  font-size: larger;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#kpis_container {
+  display: flex;
+  gap: 4px;
+}
+
+#kpis_container div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid black;
+  border-radius: 20px;
+  box-shadow: 5px 10px gray;
+  padding: 10px;
+  background-color: white;
+}
+
+#kpis_container div:hover {
+  cursor: pointer;
+  scale: 1.1;
+}

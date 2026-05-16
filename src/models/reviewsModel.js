@@ -45,9 +45,57 @@ function countAll() {
   return database.executar(query);
 }
 
+function listAll() {
+  const query = `
+        SELECT userId, petId, createdAt FROM Reviews ORDER BY createdAt ASC;
+    `;
+
+  console.log('Running the following query: ' + query);
+  return database.executar(query);
+}
+
+function countMost() {
+  const query = `
+    SELECT 
+      p.id,
+      p.name,
+      COUNT(r.petId) AS totalReviews
+        From Pets AS p
+          JOIN Reviews AS r
+          ON r.petId = p.id
+            GROUP BY p.id, p.name
+              ORDER BY totalReviews DESC
+                LIMIT 1
+
+  `;
+  console.log('Running the following query: ' + query);
+  return database.executar(query);
+}
+
+function countLess() {
+  const query = `
+    SELECT 
+      p.id,
+      p.name,
+      COUNT(r.petId) AS totalReviews
+        From Pets AS p
+          LEFT JOIN Reviews AS r
+          ON r.petId = p.id
+           GROUP BY p.id, p.name
+              ORDER BY totalReviews ASC
+                LIMIT 1
+
+  `;
+  console.log('Running the following query: ' + query);
+  return database.executar(query);
+}
+
 module.exports = {
   getExistingReview,
   create,
   getByPet,
-  countAll
+  listAll,
+  countAll,
+  countMost,
+  countLess
 };
