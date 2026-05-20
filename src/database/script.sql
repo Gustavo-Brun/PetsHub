@@ -28,7 +28,7 @@ CREATE TABLE Reviews (
     rating INT NOT NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     
-    CHECK (rating >= 0 AND rating <= 3),
+    CHECK (rating >= 1 AND rating <= 3),
     CONSTRAINT pk_reviews PRIMARY KEY(userId, petId),
     CONSTRAINT fk_review_user FOREIGN KEY(userId) 
         REFERENCES Users(id),
