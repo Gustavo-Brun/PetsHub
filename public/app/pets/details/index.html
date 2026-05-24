@@ -126,7 +126,9 @@
       details_container.innerHTML = `
         <div class="picture_container">
           <img src="/pictures/${selectedPet.pet.picture}" />
-          <button
+
+          <input type="file" id="input_picture" >
+           <button
               onclick="updateDetail('picture')"
               class="edit_button"
           >
@@ -135,7 +137,6 @@
               alt="Edit button"
             />
           </button>
-          <input type="text" id="input_picture" placeholder="Nova URL">
         </div>
         <div>
           <input type="text" id="input_name" value="${selectedPet.pet.name}">
@@ -208,7 +209,7 @@
           return;
         }
 
-        window.location = '/app/petls/list';
+        window.location = '/app/pets/list';
       })
       .catch((err) => {
         console.log(err);

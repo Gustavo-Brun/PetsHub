@@ -116,7 +116,7 @@ function update(req, res) {
   petsModel
     .getById(id)
     .then(function (data) {
-      if (data[0].userId !== Number(userId)) {
+      if (data[0].tutorId !== Number(userId)) {
         res.status(403).send('Unauthorized user');
       } else {
         petsModel

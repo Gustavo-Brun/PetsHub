@@ -107,3 +107,7 @@ footer .actions_container .action_link img,
 footer .actions_container .action_button img {
   width: 40px;
 }
+
+.edit_button {
+  z-index: 10;
+}
