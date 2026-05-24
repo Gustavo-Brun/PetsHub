@@ -26,15 +26,64 @@
       <h1>PetsHub</h1>
       <ul>
         <li><a href="/">Início</a></li>
-        <li><a href="/about">Sobre nós</a></li>
+        <li><a href="/app/pets/list">Pets</a></li>
         <li><a href="/dashboard">Dashboard</a></li>
         <li><a href="/auth/signin">Entrar</a></li>
       </ul>
     </nav>
 
-    <section id="kpis_container"></section>
+    <section id="kpis_container">
+      <div>
+        <div>
+          <span></span>
+          <p>Interações: <b>"Não gostei"</b></p>
+          <p id="total_rating1"></p>
+        </div>
 
-    <section><canvas id="myChartLine"></canvas></section>
+        <div>
+          <span></span>
+          <p>Interações: <b>"Mais ou menos"</b></p>
+          <p id="total_rating2"></p>
+        </div>
+
+        <div>
+          <span></span>
+          <p>Interações: <b>"Gostei"</b></p>
+          <p id="total_rating3"></p>
+        </div>
+      </div>
+
+      <div>
+        <img
+          src="/assets/imgs/arrow-down.png"
+          alt="Arrow Down Icon"
+        />
+        <div
+          id="less_container"
+          style="border-color: red"
+        >
+          <p id="less_petName"></p>
+          <p id="less_totalReviews"></p>
+        </div>
+
+        <div
+          id="most_container"
+          style="border-color: green"
+        >
+          <p id="most_petName"></p>
+          <p id="most_totalReviews"></p>
+        </div>
+        <img
+          src="/assets/imgs/arrow-up.png"
+          alt="Arrow Up Icon"
+        />
+      </div>
+    </section>
+
+    <section id="chart_container">
+      <h3>Interações por dia</h3>
+      <canvas id="myChartLine"></canvas>
+    </section>
   </body>
 </html>
 
@@ -61,7 +110,7 @@
       labels: labels,
       datasets: [
         {
-          label: 'Reviews',
+          label: 'Interações',
           data: [],
           fill: false,
           borderColor: 'rgb(0, 255, 0)'
@@ -116,7 +165,7 @@
       .then((res) => {
         if (res.ok) {
           res.json().then((data) => {
-            renderKpis(data.most, data.less);
+            renderKpis(data.total, data.most, data.less);
           });
         } else if (res.status == 404) {
           alert(`Dados de KPI não encontrados.`);
@@ -130,22 +179,18 @@
       });
   }
 
-  function renderKpis(most, less) {
-    kpis_container.innerHTML += `
-      <div onclick="redirect(${most.petId})">
-        <span>${most.petId}</span>
-        <p>${most.petName}</p>
-        <p>${most.totalReviews} Review(s)</p>
-      </div>
-    `;
+  function renderKpis(total, most, less) {
+    total_rating1.innerHTML = total.rating1;
+    total_rating2.innerHTML = total.rating2;
+    total_rating3.innerHTML = total.rating3;
 
-    kpis_container.innerHTML += `
-      <div onclick="redirect(${most.petId})">
-        <span>${less.petId}</span>
-        <p>${less.petName}</p>
-        <p>${less.totalReviews} Reviews</p>
-      </div>
-    `;
+    most_container.addEventListener('click', () => redirect(most.petId));
+    most_petName.innerHTML = most.petName;
+    most_totalReviews.innerHTML = `${most.totalReviews} Interações Totais`;
+
+    less_container.addEventListener('click', () => redirect(less.petId));
+    less_petName.innerHTML = less.petName;
+    less_totalReviews.innerHTML = `${less.totalReviews} Interações Totais`;
   }
 
   function redirect(id) {

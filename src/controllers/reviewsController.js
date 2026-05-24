@@ -57,34 +57,41 @@ function getKpis(req, res) {
   reviewsModel
     .countMost()
     .then(function (mostData) {
-      if (mostData.length < 1) {
-        return res.status(404).send('Data not found.');
-      }
-
       reviewsModel
         .countLess()
         .then(function (lessData) {
-          if (lessData.length < 1) {
-            return res.status(404).send('Data not found.');
-          }
+          reviewsModel
+            .countReviews()
+            .then(function (totalData) {
+              const most = mostData[0];
+              const less = lessData[0];
+              const total = totalData[0];
 
-          const most = mostData[0];
-          const less = lessData[0];
+              const payload = {
+                total: {
+                  rating1: total.totalReviews_1,
+                  rating2: total.totalReviews_2,
+                  rating3: total.totalReviews_3
+                },
+                most: {
+                  petId: most.id,
+                  petName: most.name,
+                  totalReviews: most.totalReviews
+                },
+                less: {
+                  petId: less.id,
+                  petName: less.name,
+                  totalReviews: less.totalReviews
+                }
+              };
 
-          const payload = {
-            most: {
-              petId: most.id,
-              petName: most.name,
-              totalReviews: most.totalReviews
-            },
-            less: {
-              petId: less.id,
-              petName: less.name,
-              totalReviews: less.totalReviews
-            }
-          };
-
-          res.status(200).send(payload);
+              res.status(200).send(payload);
+            })
+            .catch(function (err) {
+              console.log(err);
+              console.log('\n Unexpected error to get pet reviews! Error: ', err.sqlMessage);
+              res.status(500).json(err.sqlMessage);
+            });
         })
         .catch(function (err) {
           console.log(err);

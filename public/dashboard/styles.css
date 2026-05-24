@@ -7,6 +7,7 @@ body {
   align-items: center;
   background: linear-gradient(gray, white);
   padding-top: 100px;
+  gap: 80px;
 }
 
 nav {
@@ -41,10 +42,20 @@ a {
 
 #kpis_container {
   display: flex;
-  gap: 4px;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 50%;
+  align-items: center;
 }
 
 #kpis_container div {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+#kpis_container div div {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,9 +65,21 @@ a {
   box-shadow: 5px 10px gray;
   padding: 10px;
   background-color: white;
+  width: fit-content;
 }
 
-#kpis_container div:hover {
+#kpis_container div div:hover {
   cursor: pointer;
   scale: 1.1;
+}
+
+img {
+  width: 80px;
+  height: 80px;
+  margin: auto;
+}
+
+#chart_container {
+  width: 800px;
+  height: 500px;
 }

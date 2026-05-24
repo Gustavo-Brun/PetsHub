@@ -90,6 +90,18 @@ function countLess() {
   return database.executar(query);
 }
 
+function countReviews() {
+  const query = `
+   SELECT 
+      SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END) AS totalReviews_1,
+      SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END) AS totalReviews_2,
+      SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END) AS totalReviews_3
+    FROM Reviews;
+  `;
+  console.log('Running the following query: ' + query);
+  return database.executar(query);
+}
+
 module.exports = {
   getExistingReview,
   create,
@@ -97,5 +109,6 @@ module.exports = {
   listAll,
   countAll,
   countMost,
-  countLess
+  countLess,
+  countReviews
 };
