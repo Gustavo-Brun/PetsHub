@@ -83,3 +83,10 @@ img {
   width: 800px;
   height: 500px;
 }
+
+#date {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  font-size: larger;
+}

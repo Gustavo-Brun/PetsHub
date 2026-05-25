@@ -84,10 +84,20 @@
       <h3>Interações por dia</h3>
       <canvas id="myChartLine"></canvas>
     </section>
+
+    <span id="date"></span>
   </body>
 </html>
 
 <script>
+  let currentDate = new Date();
+  let startDate = new Date('2026-04-11');
+
+  let diff = currentDate - startDate;
+  let treatedDiff = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  date.innerHTML = `Dias em desenvolvimento: ${treatedDiff}`;
+
   function getReviews() {
     fetch('/reviews/listAll', {
       method: 'GET'
