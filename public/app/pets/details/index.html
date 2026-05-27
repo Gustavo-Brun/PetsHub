@@ -171,6 +171,7 @@
       details_container.innerHTML = `
         <img src="/pictures/${selectedPet.pet.picture}" />
         <h1>${selectedPet.pet.name}</h1>
+        <h2> Tutor: ${selectedPet.tutor.name} </h2> 
         <p>${selectedPet.pet.description}</p>
       `;
     }
@@ -275,6 +276,10 @@
     let title = input_title.value;
     let text = text_textarea.value;
     let rating = select_rating.value;
+
+    if (title == '' || text == '' || rating <= 0) {
+      return alert('Preencha todos os campos para prosseguir.');
+    }
 
     fetch(`/reviews/create`, {
       method: 'POST',
