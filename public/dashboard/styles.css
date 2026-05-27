@@ -1,11 +1,12 @@
 body {
+  font-family: 'Quicksand', sans-serif;
   margin: 0;
   padding: 0;
   min-height: Calc(100vh - 100px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(gray, white);
+  background: linear-gradient(#faf7f2 0%, #efcc5b 100%);
   padding-top: 100px;
   gap: 80px;
 }
@@ -82,11 +83,17 @@ img {
 #chart_container {
   width: 800px;
   height: 500px;
+  border: 2px solid black;
+  border-radius: 20px;
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 10px;
 }
 
 #date {
   position: fixed;
   left: 0;
   bottom: 0;
-  font-size: larger;
+  font-size: x-large;
+  font-weight: bold;
 }

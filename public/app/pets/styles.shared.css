@@ -1,4 +1,5 @@
 body {
+  font-family: 'Quicksand', sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -6,5 +7,5 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(gray, white);
+  background: linear-gradient(#faf7f2 0%, #efcc5b 100%);
 }
