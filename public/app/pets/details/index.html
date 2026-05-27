@@ -22,6 +22,20 @@
       rel="stylesheet"
       href="styles.css"
     />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body onload="(validateSession(), getPet())">
@@ -42,6 +56,24 @@
           id="listReview_container"
           class="card_container"
         ></div>
+      </section>
+
+      <section id="section_ai">
+        <img
+          id="icon_ai"
+          src="/assets/imgs/ai.png"
+          alt="Ai Chatbox Button"
+          onclick="((icon_ai.style.display = 'none'), (chatbox_container.style.display = 'flex'))"
+        />
+        <div id="chatbox_container">
+          <div id="chatbox_history"></div>
+          <input
+            type="text"
+            id="input_prompt"
+            placeholder="Digite sua mensagem"
+          />
+          <button onclick="sendPrompt()">Enviar</button>
+        </div>
       </section>
     </div>
 
@@ -80,6 +112,7 @@
   }
 
   let selectedPet;
+  let history = [];
 
   function getPet() {
     if (!petId) {
@@ -111,6 +144,10 @@
             selectedPet.pet.description = 'Sem descrição.';
           }
 
+          if (selectedPet.tutor.id == userId) {
+            section_ai.style.display = 'flex';
+          }
+
           renderDetails();
           renderReviews();
         });
@@ -127,16 +164,7 @@
         <div class="picture_container">
           <img src="/pictures/${selectedPet.pet.picture}" />
 
-          <input type="file" id="input_picture" >
-           <button
-              onclick="updateDetail('picture')"
-              class="edit_button"
-          >
-            <img
-              src="/assets/imgs/edit.png"
-              alt="Edit button"
-            />
-          </button>
+          <input type="file" id="input_picture" style="display: none;">
         </div>
         <div>
           <input type="text" id="input_name" value="${selectedPet.pet.name}">
@@ -313,5 +341,64 @@
         console.log(err);
         alert('Ops, algo deu errado. Tente novamente mais tarde!');
       });
+  }
+
+  function sendPrompt() {
+    if (!petId) {
+      return (window.location = '/app/pets/list');
+    }
+
+    let prompt = input_prompt.value;
+    let { picture, ...petData } = selectedPet.pet;
+
+    fetch(`/bobia/ask`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        pet: petData,
+        tutor: selectedPet.tutor,
+        reviews: selectedPet.reviews,
+        prompt
+      })
+    })
+      .then((res) => {
+        if (!res.ok) {
+          if (res.status == 400) {
+            alert(`Algo deu errado ao tentar conversar com o pet.`);
+          } else {
+            alert('Opss, algo deu errado. Tente novamente mais tarde!');
+          }
+
+          return;
+        }
+
+        res.json().then((data) => {
+          updateChat(data);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Ops, algo deu errado. Tente novamente mais tarde!');
+      });
+  }
+
+  function updateChat(data) {
+    history.push(data.response);
+
+    let content = '';
+
+    for (let i = 0; i < history.length; i++) {
+      let response = history[i];
+
+      content += `
+            <div>
+              <p>${selectedPet.pet.name}</p>
+              <p>${response}</p>
+            </div>
+          `;
+    }
+    chatbox_history.innerHTML = content;
   }
 </script>

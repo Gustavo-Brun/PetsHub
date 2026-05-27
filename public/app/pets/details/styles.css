@@ -81,6 +81,9 @@
 
 #addReview_container {
   height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 footer .actions_container .action_link {
@@ -110,4 +113,101 @@ footer .actions_container .action_button img {
 
 .edit_button {
   z-index: 10;
+}
+
+#section_ai {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  display: none;
+  z-index: 99;
+}
+
+#section_ai img {
+  width: 160px;
+}
+
+#section_ai img:hover {
+  scale: 1.1;
+  cursor: pointer;
+}
+
+#chatbox_container::before {
+  content: '🐾 ~ Fale com seu Pet';
+  height: 70px;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #6c63ff, #4f8cff);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+#chatbox_container {
+  display: none;
+  flex-direction: column;
+  width: 260px;
+  height: 420px;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.18),
+    0 0 20px rgba(108, 99, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+#chatbox_history {
+  flex: 1;
+  padding: 18px;
+  overflow-y: auto;
+  background: #f7f8fc;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#chatbox_history div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+#chatbox_history::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chatbox_history::-webkit-scrollbar-thumb {
+  background: rgba(108, 99, 255, 0.4);
+  border-radius: 999px;
+}
+
+#input_prompt {
+  border: none;
+  border-top: 1px solid #ececec;
+  padding: 18px;
+  font-size: 15px;
+  outline: none;
+  background: white;
+  color: #333;
+}
+
+#chatbox_container button {
+  border: none;
+  background: linear-gradient(135deg, #6c63ff, #4f8cff);
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 16px;
+  cursor: pointer;
+}
+
+#chatbox_container button:hover {
+  opacity: 0.92;
+  scale: 1.01;
 }

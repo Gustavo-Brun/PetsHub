@@ -20,6 +20,7 @@ var indexRouter = require("./src/routes/index");
 const usersRouter = require('./src/routes/users')
 const petsRoutes = require('./src/routes/pets')
 const reviewsRouter = require('./src/routes/reviews')
+const bobiaRouter = require("./src/routes/bobia");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -31,6 +32,7 @@ app.use("/", indexRouter);
 app.use('/users', usersRouter);
 app.use('/pets', petsRoutes);
 app.use('/reviews', reviewsRouter);
+app.use("/bobia", bobiaRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
