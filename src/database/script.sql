@@ -12,7 +12,7 @@ CREATE TABLE Pets (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL,
     picture VARCHAR(255) UNIQUE,
-    description VARCHAR(45),
+    description VARCHAR(500),
     userId INT NOT NULL,
 
     CONSTRAINT un_userId_name UNIQUE(userId, name),
