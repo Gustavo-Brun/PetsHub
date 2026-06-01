@@ -26,5 +26,5 @@ span {
 button {
   padding: 10px;
   border-radius: 24px;
-  background: linear-gradient(gray, white);
+  background: linear-gradient(#faf7f2 0%, #efcc5b 100%);
 }
