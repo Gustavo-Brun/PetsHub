@@ -286,11 +286,23 @@
     }
 
     for (let i = 0; i < selectedPet.reviews.length; i++) {
+      let rating = '';
+
+      if (selectedPet.reviews[i].reviewRating == 1) {
+        rating = 'Não gostei';
+      } else if (selectedPet.reviews[i].reviewRating == 2) {
+        rating = 'Mais ou menos';
+      } else {
+        rating = 'Gostei';
+      }
+
       content += `
           <li>
-            <span>${selectedPet.reviews[i].reviewUser}</span>
-            <span>${selectedPet.reviews[i].reviewRating}</span>
+            <b>${selectedPet.reviews[i].reviewUser} - </b>
+            <span>${rating}</span>
+            <br />
             <span>${selectedPet.reviews[i].reviewTitle}</span>
+            <br />
             <span>${selectedPet.reviews[i].reviewText}</span>
           </li>
           <br />
@@ -344,6 +356,9 @@
   }
 
   function sendPrompt() {
+    if (history.length > 3) {
+      return alert('Você atingiu o limite! Usar IA é caro, chega.');
+    }
     if (!petId) {
       return (window.location = '/app/pets/list');
     }
